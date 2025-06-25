@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 export default function AdminPage() {
     const [logs, setLogs] = useState<any[]>([]);
     const [filter, setFilter] = useState('');
+    const [stats, setStats] = useState<any>(null);
 
     useEffect(() => {
         fetch(`/api/log${filter ? `?action=${filter}` : ''}`)
@@ -10,9 +11,43 @@ export default function AdminPage() {
             .then(setLogs);
     }, [filter]);
 
+    useEffect(() => {
+        fetch('/api/admin-stats')
+            .then((res) => res.json())
+            .then(setStats);
+    }, []);
+
     return (
         <main className="max-w-2xl mx-auto py-8 px-4">
             <h1 className="text-2xl font-bold mb-4">관리자 페이지</h1>
+            {stats && (
+                <section className="mb-6 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div className="p-4 border rounded bg-white shadow text-center">
+                        <div className="text-sm text-gray-500">총 투표 수</div>
+                        <div className="text-xl font-bold">{stats.voteCount}</div>
+                    </div>
+                    <div className="p-4 border rounded bg-white shadow text-center">
+                        <div className="text-sm text-gray-500">총 팀 수</div>
+                        <div className="text-xl font-bold">{stats.teamCount}</div>
+                    </div>
+                    <div className="p-4 border rounded bg-white shadow text-center">
+                        <div className="text-sm text-gray-500">총 유저 수</div>
+                        <div className="text-xl font-bold">{stats.userCount}</div>
+                    </div>
+                    <div className="p-4 border rounded bg-white shadow text-center col-span-2 sm:col-span-1">
+                        <div className="text-sm text-gray-500">오늘 투표</div>
+                        <div className="text-xl font-bold">{stats.todayVote}</div>
+                    </div>
+                    <div className="p-4 border rounded bg-white shadow text-center col-span-2 sm:col-span-1">
+                        <div className="text-sm text-gray-500">오늘 팀 생성</div>
+                        <div className="text-xl font-bold">{stats.todayTeam}</div>
+                    </div>
+                    <div className="p-4 border rounded bg-white shadow text-center col-span-2 sm:col-span-1">
+                        <div className="text-sm text-gray-500">오늘 가입</div>
+                        <div className="text-xl font-bold">{stats.todayUser}</div>
+                    </div>
+                </section>
+            )}
             <section className="mb-6">
                 <h2 className="text-lg font-semibold mb-2">로그/부정투표 내역</h2>
                 <div className="mb-2">
