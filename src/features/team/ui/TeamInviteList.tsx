@@ -41,28 +41,38 @@ export default function TeamInviteList() {
     };
 
     return (
-        <div className="max-w-md mx-auto p-4 border rounded mt-4">
-            <h2 className="text-lg font-bold mb-2">내 팀 초대 목록</h2>
+        <div className="max-w-md mx-auto p-8 border border-soopborder rounded-card bg-white shadow-card mt-4">
+            <h2 className="text-2xl font-bold mb-4 text-soopgreen">내 팀 초대 목록</h2>
             {invites.length === 0 && <div>초대가 없습니다.</div>}
             <ul>
                 {invites.map((invite) => (
-                    <li key={invite.id} className="flex items-center gap-2 mb-2">
-                        <span>
+                    <li key={invite.id} className="flex items-center gap-2 mb-3 bg-soopgray rounded-btn px-3 py-2">
+                        <span className="font-semibold text-sooptext">
                             [{invite.team.category}] {invite.team.name}
                         </span>
-                        <span className="text-sm">({invite.status})</span>
+                        <span
+                            className={`text-sm font-semibold ${
+                                invite.status === 'pending'
+                                    ? 'text-soopblue'
+                                    : invite.status === 'accepted'
+                                    ? 'text-soopgreen'
+                                    : 'text-soopred'
+                            }`}
+                        >
+                            ({invite.status})
+                        </span>
                         {invite.status === 'pending' && (
                             <>
                                 <button
                                     onClick={() => handleAction(invite.id, 'accepted')}
-                                    className="px-2 py-1 bg-green-500 text-white rounded"
+                                    className="px-3 py-1 bg-soopgreen text-white rounded-btn shadow-btn font-semibold hover:bg-soopblue transition"
                                     disabled={loading}
                                 >
                                     수락
                                 </button>
                                 <button
                                     onClick={() => handleAction(invite.id, 'rejected')}
-                                    className="px-2 py-1 bg-red-500 text-white rounded"
+                                    className="px-3 py-1 bg-soopred text-white rounded-btn shadow-btn font-semibold hover:bg-red-700 transition"
                                     disabled={loading}
                                 >
                                     거절

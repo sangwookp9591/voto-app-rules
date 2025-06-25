@@ -1,23 +1,9 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ReactNode } from 'react';
 import { getServerSession } from 'next-auth';
-import { SessionProvider } from 'next-auth/react';
-import Navbar from '../shared/components/Navbar';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from '../shared/components/Sidebar';
-
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
-});
+import ClientRoot from '../shared/components/ClientRoot';
 
 export const metadata: Metadata = {
     title: 'Create Next App',
@@ -31,11 +17,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <body className={`bg-soopgray text-sooptext min-h-screen flex font-sans`}>
                 <Sidebar />
                 <div className="flex-1 md:ml-56 min-h-screen flex flex-col">
-                    <SessionProvider session={session}>
-                        <Navbar />
-                        <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
-                        <main className="flex-1 px-4 py-6 md:px-8 md:py-10 max-w-5xl w-full mx-auto">{children}</main>
-                    </SessionProvider>
+                    <ClientRoot session={session}>{children}</ClientRoot>
                 </div>
             </body>
         </html>

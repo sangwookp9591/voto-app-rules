@@ -41,7 +41,8 @@ export default function VoteForm() {
     };
 
     return (
-        <div>
+        <div className="bg-white rounded-card shadow-card p-8 border border-soopborder max-w-xl mx-auto">
+            <div className="mb-4 text-2xl font-bold text-soopgreen">투표 참여</div>
             <div className="mb-2 text-red-600 font-semibold text-center sm:text-left">{remainText}</div>
             <div className="sm:flex sm:gap-8">
                 <div className="flex-1">
@@ -53,7 +54,7 @@ export default function VoteForm() {
                     </div>
                     <button
                         aria-label="투표하기"
-                        className="w-full px-4 py-2 bg-green-600 text-white rounded mb-2"
+                        className="w-full px-4 py-2 bg-soopgreen text-white rounded-btn shadow-btn mb-2 font-semibold hover:bg-soopblue transition"
                         disabled={!selected || loading || isClosed}
                         onClick={handleVote}
                     >

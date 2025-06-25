@@ -1,3 +1,4 @@
+'use client';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -17,8 +18,8 @@ export default function VotePage() {
         );
     }
     return (
-        <main className="max-w-xl mx-auto py-8 px-4">
-            <h1 className="text-2xl font-bold mb-4">투표 참여</h1>
+        <main className="min-h-screen bg-soopbg flex flex-col items-center justify-center py-12 px-4">
+            <h1 className="text-3xl font-bold text-soopgreen mb-8">팀 투표</h1>
             <VoteForm />
         </main>
     );

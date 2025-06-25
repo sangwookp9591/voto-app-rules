@@ -1,16 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
+interface Log {
+    id: string;
+    createdAt: string;
+    user?: { nickname?: string; name?: string; email?: string };
+    action: string;
+    ip: string;
+    detail: string;
+}
+
+interface AdminStats {
+    voteCount: number;
+    teamCount: number;
+    userCount: number;
+    todayVote: number;
+    todayTeam: number;
+    todayUser: number;
+}
+
+interface Vote {
+    id: string;
+    createdAt: string;
+    user?: { nickname?: string; name?: string; email?: string };
+    candidate?: { name?: string };
+}
+
+interface Team {
+    id: string;
+    name: string;
+    category?: string;
+    leader?: { nickname?: string; name?: string; email?: string } | string;
+    members?: { userId: string }[];
+}
+
+interface User {
+    id: string;
+    name?: string;
+    email?: string;
+    nickname?: string;
+    createdAt?: string;
+}
+
+interface LogStat {
+    [key: string]: unknown;
+}
+
 export default function AdminPage() {
-    const [logs, setLogs] = useState<any[]>([]);
+    const [logs, setLogs] = useState<Log[]>([]);
     const [filter, setFilter] = useState('');
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<AdminStats | null>(null);
     const [tab, setTab] = useState('votes');
-    const [votes, setVotes] = useState<any[]>([]);
-    const [teams, setTeams] = useState<any[]>([]);
-    const [users, setUsers] = useState<any[]>([]);
+    const [votes, setVotes] = useState<Vote[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [search, setSearch] = useState('');
-    const [logStats, setLogStats] = useState<any[]>([]);
+    const [logStats, setLogStats] = useState<LogStat[]>([]);
 
     useEffect(() => {
         fetch(`/api/log${filter ? `?action=${filter}` : ''}`)
@@ -53,75 +98,77 @@ export default function AdminPage() {
     };
 
     return (
-        <main className="max-w-2xl mx-auto py-8 px-4">
-            <h1 className="text-2xl font-bold mb-4">관리자 페이지</h1>
+        <main className="min-h-screen bg-soopbg flex flex-col items-center py-12 px-4">
+            <h1 className="text-3xl font-bold text-soopgreen mb-8">관리자 페이지</h1>
             {stats && (
-                <section className="mb-6 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    <div className="p-4 border rounded bg-white shadow text-center">
-                        <div className="text-sm text-gray-500">총 투표 수</div>
-                        <div className="text-xl font-bold">{stats.voteCount}</div>
+                <section className="mb-8 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full max-w-3xl">
+                    <div className="p-6 border border-soopborder rounded-card bg-white shadow-card text-center">
+                        <div className="text-sm text-sooptext">총 투표 수</div>
+                        <div className="text-2xl font-bold text-soopgreen">{stats.voteCount}</div>
                     </div>
-                    <div className="p-4 border rounded bg-white shadow text-center">
-                        <div className="text-sm text-gray-500">총 팀 수</div>
-                        <div className="text-xl font-bold">{stats.teamCount}</div>
+                    <div className="p-6 border border-soopborder rounded-card bg-white shadow-card text-center">
+                        <div className="text-sm text-sooptext">총 팀 수</div>
+                        <div className="text-2xl font-bold text-soopgreen">{stats.teamCount}</div>
                     </div>
-                    <div className="p-4 border rounded bg-white shadow text-center">
-                        <div className="text-sm text-gray-500">총 유저 수</div>
-                        <div className="text-xl font-bold">{stats.userCount}</div>
+                    <div className="p-6 border border-soopborder rounded-card bg-white shadow-card text-center">
+                        <div className="text-sm text-sooptext">총 유저 수</div>
+                        <div className="text-2xl font-bold text-soopgreen">{stats.userCount}</div>
                     </div>
-                    <div className="p-4 border rounded bg-white shadow text-center col-span-2 sm:col-span-1">
-                        <div className="text-sm text-gray-500">오늘 투표</div>
-                        <div className="text-xl font-bold">{stats.todayVote}</div>
+                    <div className="p-6 border border-soopborder rounded-card bg-white shadow-card text-center col-span-2 sm:col-span-1">
+                        <div className="text-sm text-sooptext">오늘 투표</div>
+                        <div className="text-2xl font-bold text-soopblue">{stats.todayVote}</div>
                     </div>
-                    <div className="p-4 border rounded bg-white shadow text-center col-span-2 sm:col-span-1">
-                        <div className="text-sm text-gray-500">오늘 팀 생성</div>
-                        <div className="text-xl font-bold">{stats.todayTeam}</div>
+                    <div className="p-6 border border-soopborder rounded-card bg-white shadow-card text-center col-span-2 sm:col-span-1">
+                        <div className="text-sm text-sooptext">오늘 팀 생성</div>
+                        <div className="text-2xl font-bold text-soopblue">{stats.todayTeam}</div>
                     </div>
-                    <div className="p-4 border rounded bg-white shadow text-center col-span-2 sm:col-span-1">
-                        <div className="text-sm text-gray-500">오늘 가입</div>
-                        <div className="text-xl font-bold">{stats.todayUser}</div>
+                    <div className="p-6 border border-soopborder rounded-card bg-white shadow-card text-center col-span-2 sm:col-span-1">
+                        <div className="text-sm text-sooptext">오늘 가입</div>
+                        <div className="text-2xl font-bold text-soopblue">{stats.todayUser}</div>
                     </div>
                 </section>
             )}
-            <section className="mb-6">
-                <h2 className="text-lg font-semibold mb-2">로그/부정투표 내역</h2>
-                <div className="mb-2">
+            <section className="mb-8 w-full max-w-3xl">
+                <h2 className="text-xl font-semibold mb-4 text-soopgreen">로그/부정투표 내역</h2>
+                <div className="mb-4 flex gap-2">
                     <button
                         onClick={() => setFilter('')}
-                        className={`mr-2 px-2 py-1 rounded ${!filter ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                        className={`px-4 py-2 rounded-btn font-semibold shadow-btn transition ${
+                            !filter ? 'bg-soopblue text-white' : 'bg-soopgray text-sooptext'
+                        }`}
                     >
                         전체
                     </button>
                     <button
                         onClick={() => setFilter('vote_attempt_duplicate')}
-                        className={`px-2 py-1 rounded ${
-                            filter === 'vote_attempt_duplicate' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                        className={`px-4 py-2 rounded-btn font-semibold shadow-btn transition ${
+                            filter === 'vote_attempt_duplicate' ? 'bg-soopblue text-white' : 'bg-soopgray text-sooptext'
                         }`}
                     >
                         부정투표 시도
                     </button>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full border text-sm">
+                <div className="overflow-x-auto bg-white rounded-card shadow-card border border-soopborder">
+                    <table className="min-w-full text-sm">
                         <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border px-2 py-1">시간</th>
-                                <th className="border px-2 py-1">유저</th>
-                                <th className="border px-2 py-1">액션</th>
-                                <th className="border px-2 py-1">IP</th>
-                                <th className="border px-2 py-1">상세</th>
+                            <tr className="bg-soopgray">
+                                <th className="border-b border-soopborder px-2 py-2">시간</th>
+                                <th className="border-b border-soopborder px-2 py-2">유저</th>
+                                <th className="border-b border-soopborder px-2 py-2">액션</th>
+                                <th className="border-b border-soopborder px-2 py-2">IP</th>
+                                <th className="border-b border-soopborder px-2 py-2">상세</th>
                             </tr>
                         </thead>
                         <tbody>
                             {logs.map((log) => (
-                                <tr key={log.id}>
-                                    <td className="border px-2 py-1">{new Date(log.createdAt).toLocaleString()}</td>
-                                    <td className="border px-2 py-1">
+                                <tr key={log.id} className="even:bg-soopgray/50">
+                                    <td className="px-2 py-1">{new Date(log.createdAt).toLocaleString()}</td>
+                                    <td className="px-2 py-1">
                                         {log.user?.nickname || log.user?.name || log.user?.email || '-'}
                                     </td>
-                                    <td className="border px-2 py-1">{log.action}</td>
-                                    <td className="border px-2 py-1">{log.ip}</td>
-                                    <td className="border px-2 py-1">{log.detail}</td>
+                                    <td className="px-2 py-1">{log.action}</td>
+                                    <td className="px-2 py-1">{log.ip}</td>
+                                    <td className="px-2 py-1">{log.detail}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -224,16 +271,26 @@ export default function AdminPage() {
                             <tbody>
                                 {teams
                                     .filter(
-                                        (t) => !search || t.name?.includes(search) || t.leader?.name?.includes(search)
+                                        (t) =>
+                                            !search ||
+                                            t.name?.includes(search) ||
+                                            (typeof t.leader === 'object' &&
+                                                t.leader !== null &&
+                                                'name' in t.leader &&
+                                                t.leader.name?.includes(search))
                                     )
                                     .map((t) => (
                                         <tr key={t.id}>
                                             <td className="border px-2 py-1">{t.name}</td>
                                             <td className="border px-2 py-1">{t.category}</td>
                                             <td className="border px-2 py-1">
-                                                {t.leader?.nickname || t.leader?.name || t.leader?.email}
+                                                {typeof t.leader === 'object' &&
+                                                t.leader !== null &&
+                                                'nickname' in t.leader
+                                                    ? t.leader.nickname || t.leader.name || t.leader.email
+                                                    : ''}
                                             </td>
-                                            <td className="border px-2 py-1">{t.members.length}</td>
+                                            <td className="border px-2 py-1">{t.members?.length ?? 0}</td>
                                             <td className="border px-2 py-1">
                                                 <button
                                                     onClick={() => handleAdminDelete('team', t.id)}
@@ -272,7 +329,7 @@ export default function AdminPage() {
                                             <td className="border px-2 py-1">{u.nickname || u.name}</td>
                                             <td className="border px-2 py-1">{u.email}</td>
                                             <td className="border px-2 py-1">
-                                                {new Date(u.createdAt).toLocaleDateString()}
+                                                {new Date(u.createdAt ?? '').toLocaleDateString()}
                                             </td>
                                             <td className="border px-2 py-1">
                                                 <button

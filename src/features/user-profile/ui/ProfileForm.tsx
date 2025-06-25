@@ -40,15 +40,18 @@ export default function ProfileForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border rounded">
-            <h2 className="text-xl font-bold mb-4">게임 프로필 등록/수정</h2>
-            <label className="block mb-2">
+        <form
+            onSubmit={handleSubmit}
+            className="max-w-md mx-auto p-8 border border-soopborder rounded-card bg-white shadow-card"
+        >
+            <h2 className="text-2xl font-bold mb-6 text-soopgreen">게임 프로필 등록/수정</h2>
+            <label className="block mb-4 font-semibold text-sooptext">
                 게임
                 <select
                     name="game"
                     value={profile.game || ''}
                     onChange={handleChange}
-                    className="w-full border rounded p-2"
+                    className="w-full border border-soopborder rounded-btn p-2 mt-1 focus:ring-2 focus:ring-soopgreen"
                 >
                     <option value="">선택</option>
                     {GAMES.map((g) => (
@@ -58,44 +61,48 @@ export default function ProfileForm() {
                     ))}
                 </select>
             </label>
-            <label className="block mb-2">
+            <label className="block mb-4 font-semibold text-sooptext">
                 게임 닉네임/아이디
                 <input
                     name="gameId"
                     value={profile.gameId || ''}
                     onChange={handleChange}
-                    className="w-full border rounded p-2"
+                    className="w-full border border-soopborder rounded-btn p-2 mt-1 focus:ring-2 focus:ring-soopgreen"
                 />
             </label>
-            <label className="block mb-2">
+            <label className="block mb-4 font-semibold text-sooptext">
                 티어
                 <input
                     name="tier"
                     value={profile.tier || ''}
                     onChange={handleChange}
-                    className="w-full border rounded p-2"
+                    className="w-full border border-soopborder rounded-btn p-2 mt-1 focus:ring-2 focus:ring-soopgreen"
                 />
             </label>
-            <label className="block mb-2">
+            <label className="block mb-4 font-semibold text-sooptext">
                 점수
                 <input
                     name="point"
                     type="number"
                     value={profile.point || ''}
                     onChange={handleChange}
-                    className="w-full border rounded p-2"
+                    className="w-full border border-soopborder rounded-btn p-2 mt-1 focus:ring-2 focus:ring-soopgreen"
                 />
             </label>
-            <label className="block mb-2">
+            <label className="block mb-6 font-semibold text-sooptext">
                 포지션
                 <input
                     name="position"
                     value={profile.position || ''}
                     onChange={handleChange}
-                    className="w-full border rounded p-2"
+                    className="w-full border border-soopborder rounded-btn p-2 mt-1 focus:ring-2 focus:ring-soopgreen"
                 />
             </label>
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={loading}>
+            <button
+                type="submit"
+                className="w-full px-4 py-2 bg-soopgreen text-white rounded-btn shadow-btn font-semibold hover:bg-soopblue transition"
+                disabled={loading}
+            >
                 저장
             </button>
             {message && <div className="mt-2 text-green-600">{message}</div>}

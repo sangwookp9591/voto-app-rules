@@ -21,13 +21,15 @@ interface Team {
     name: string;
     category: string;
     members: Member[];
+    leaderId: string;
 }
 
 export default function TeamDetail({ teamId }: { teamId: string }) {
     const [team, setTeam] = useState<Team | null>(null);
     const [profiles, setProfiles] = useState<Record<string, UserProfile | null>>({});
     const { data: session } = useSession();
-    const isLeader = session && team && session.user?.id === team.leaderId;
+    const userId = (session?.user as { id: string })?.id;
+    const isLeader = userId && team && userId === team.leaderId;
     const [editName, setEditName] = useState('');
     const [editCategory, setEditCategory] = useState('');
     const [addMemberId, setAddMemberId] = useState('');
@@ -94,46 +96,48 @@ export default function TeamDetail({ teamId }: { teamId: string }) {
     if (!team) return <div>팀 정보를 불러오는 중...</div>;
 
     return (
-        <div className="max-w-xl mx-auto p-4 border rounded">
-            <h2 className="text-xl font-bold mb-2">
+        <div className="max-w-xl mx-auto p-8 border border-soopborder rounded-card bg-white shadow-card">
+            <h2 className="text-2xl font-bold mb-4 text-soopgreen">
                 [{team.category}] {team.name}
             </h2>
             {isLeader && (
-                <div className="mb-4 p-2 border rounded bg-gray-50">
-                    <div className="mb-2 font-semibold">팀장 관리</div>
-                    <input
-                        aria-label="팀명 수정"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        placeholder="팀명 수정"
-                        className="border rounded p-1 mr-2"
-                    />
-                    <input
-                        aria-label="카테고리 수정"
-                        value={editCategory}
-                        onChange={(e) => setEditCategory(e.target.value)}
-                        placeholder="카테고리 수정"
-                        className="border rounded p-1 mr-2"
-                    />
-                    <button
-                        aria-label="팀 정보 수정"
-                        onClick={handleEdit}
-                        className="px-2 py-1 bg-blue-500 text-white rounded"
-                    >
-                        수정
-                    </button>
-                    <div className="mt-2">
+                <div className="mb-6 p-4 border border-soopborder rounded-card bg-soopgray">
+                    <div className="mb-2 font-semibold text-sooptext">팀장 관리</div>
+                    <div className="flex flex-col sm:flex-row gap-2 mb-2">
+                        <input
+                            aria-label="팀명 수정"
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            placeholder="팀명 수정"
+                            className="border border-soopborder rounded-btn p-2 flex-1 focus:ring-2 focus:ring-soopgreen"
+                        />
+                        <input
+                            aria-label="카테고리 수정"
+                            value={editCategory}
+                            onChange={(e) => setEditCategory(e.target.value)}
+                            placeholder="카테고리 수정"
+                            className="border border-soopborder rounded-btn p-2 flex-1 focus:ring-2 focus:ring-soopgreen"
+                        />
+                        <button
+                            aria-label="팀 정보 수정"
+                            onClick={handleEdit}
+                            className="px-4 py-2 bg-soopblue text-white rounded-btn shadow-btn font-semibold hover:bg-soopgreen transition"
+                        >
+                            수정
+                        </button>
+                    </div>
+                    <div className="flex gap-2 mb-2">
                         <input
                             aria-label="추가할 유저ID"
                             value={addMemberId}
                             onChange={(e) => setAddMemberId(e.target.value)}
                             placeholder="추가할 유저ID"
-                            className="border rounded p-1 mr-2"
+                            className="border border-soopborder rounded-btn p-2 flex-1 focus:ring-2 focus:ring-soopgreen"
                         />
                         <button
                             aria-label="팀원 추가"
                             onClick={handleAddMember}
-                            className="px-2 py-1 bg-green-500 text-white rounded"
+                            className="px-4 py-2 bg-soopgreen text-white rounded-btn shadow-btn font-semibold hover:bg-soopblue transition"
                         >
                             팀원 추가
                         </button>
@@ -141,18 +145,21 @@ export default function TeamDetail({ teamId }: { teamId: string }) {
                     <button
                         aria-label="팀 삭제"
                         onClick={handleDelete}
-                        className="mt-2 px-2 py-1 bg-red-500 text-white rounded"
+                        className="mt-2 px-4 py-2 bg-soopred text-white rounded-btn shadow-btn font-semibold hover:bg-red-700 transition"
                     >
                         팀 삭제
                     </button>
                 </div>
             )}
-            <h3 className="font-semibold mb-2">멤버 목록</h3>
+            <h3 className="font-semibold mb-2 text-sooptext">멤버 목록</h3>
             <ul>
                 {team.members.map((member) => (
-                    <li key={member.userId} className="mb-2 border-b pb-2 flex justify-between items-center">
+                    <li
+                        key={member.userId}
+                        className="mb-2 border-b border-soopborder pb-2 flex justify-between items-center"
+                    >
                         <div>
-                            <div className="font-semibold">
+                            <div className="font-semibold text-soopgreen">
                                 {member.user.nickname || member.user.name || member.user.email}
                             </div>
                             {profiles[member.userId] ? (
@@ -165,7 +172,10 @@ export default function TeamDetail({ teamId }: { teamId: string }) {
                             )}
                         </div>
                         {isLeader && (
-                            <button onClick={() => handleRemoveMember(member.userId)} className="text-red-500 text-sm">
+                            <button
+                                onClick={() => handleRemoveMember(member.userId)}
+                                className="text-soopred text-sm font-bold hover:underline"
+                            >
                                 삭제
                             </button>
                         )}
