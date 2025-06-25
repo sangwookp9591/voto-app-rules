@@ -17,7 +17,10 @@ export default function VoteForm() {
             body: JSON.stringify({ candidateId: selected }),
         });
         if (res.ok) setMessage('투표 완료!');
-        else setMessage('투표 실패');
+        else {
+            const err = await res.json();
+            setMessage(err.error || '투표 실패');
+        }
         setLoading(false);
     };
 

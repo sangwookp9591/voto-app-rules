@@ -21,7 +21,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: '로그인 필요' }, { status: 401 });
     }
     const { candidateId } = await req.json();
-    // 중복투표 방지는 추후 추가
+    // 중복투표 방지: 이미 투표한 경우 에러 반환
+    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    if (!user) return NextResponse.json({ error: '유저 없음' }, { status: 404 });
+    const already = await prisma.vote.findFirst({ where: { userId: user.id } });
+    if (already) {
+        return NextResponse.json({ error: '이미 투표하셨습니다.' }, { status: 400 });
+    }
     const vote = await prisma.vote.create({
         data: {
             user: { connect: { email: session.user.email } },
