@@ -17,6 +17,9 @@ model User {
   provider      String?
   password      String? // 일반 회원가입용
   votes         Vote[]
+  userProfiles  UserProfile[]
+  teamMembers   TeamMember[]
+  teamInvites   TeamInvite[]
   createdAt     DateTime @default(now())
 }
 
@@ -43,4 +46,44 @@ model VoteResult {
   candidate   Candidate  @relation(fields: [candidateId], references: [id])
   candidateId String
   count       Int        @default(0)
+}
+
+model UserProfile {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  game      String   // 예: LOL, 배그, 발로란트
+  gameId    String   // 게임 내 닉네임/아이디
+  tier      String   // 티어
+  point     Int      // 점수
+  position  String   // 포지션(롤 등)
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  name      String
+  category  String   // 게임종목
+  members   TeamMember[]
+  invites   TeamInvite[]
+  createdAt DateTime @default(now())
+}
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  joinedAt  DateTime @default(now())
+}
+
+model TeamInvite {
+  id        String   @id @default(uuid())
+  team      Team     @relation(fields: [teamId], references: [id])
+  teamId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  status    String   // pending, accepted, rejected
+  createdAt DateTime @default(now())
+  respondedAt DateTime?
 } 
