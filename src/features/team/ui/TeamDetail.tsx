@@ -102,32 +102,47 @@ export default function TeamDetail({ teamId }: { teamId: string }) {
                 <div className="mb-4 p-2 border rounded bg-gray-50">
                     <div className="mb-2 font-semibold">팀장 관리</div>
                     <input
+                        aria-label="팀명 수정"
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
                         placeholder="팀명 수정"
                         className="border rounded p-1 mr-2"
                     />
                     <input
+                        aria-label="카테고리 수정"
                         value={editCategory}
                         onChange={(e) => setEditCategory(e.target.value)}
                         placeholder="카테고리 수정"
                         className="border rounded p-1 mr-2"
                     />
-                    <button onClick={handleEdit} className="px-2 py-1 bg-blue-500 text-white rounded">
+                    <button
+                        aria-label="팀 정보 수정"
+                        onClick={handleEdit}
+                        className="px-2 py-1 bg-blue-500 text-white rounded"
+                    >
                         수정
                     </button>
                     <div className="mt-2">
                         <input
+                            aria-label="추가할 유저ID"
                             value={addMemberId}
                             onChange={(e) => setAddMemberId(e.target.value)}
                             placeholder="추가할 유저ID"
                             className="border rounded p-1 mr-2"
                         />
-                        <button onClick={handleAddMember} className="px-2 py-1 bg-green-500 text-white rounded">
+                        <button
+                            aria-label="팀원 추가"
+                            onClick={handleAddMember}
+                            className="px-2 py-1 bg-green-500 text-white rounded"
+                        >
                             팀원 추가
                         </button>
                     </div>
-                    <button onClick={handleDelete} className="mt-2 px-2 py-1 bg-red-500 text-white rounded">
+                    <button
+                        aria-label="팀 삭제"
+                        onClick={handleDelete}
+                        className="mt-2 px-2 py-1 bg-red-500 text-white rounded"
+                    >
                         팀 삭제
                     </button>
                 </div>

@@ -42,19 +42,26 @@ export default function VoteForm() {
 
     return (
         <div>
-            <div className="mb-2 text-red-600 font-semibold">{remainText}</div>
-            <TeamList onVote={setSelected} />
-            <div className="mb-4 mt-4">
-                내 투표: <span className="font-semibold">{selected ? selected : '아직 없음'}</span>
+            <div className="mb-2 text-red-600 font-semibold text-center sm:text-left">{remainText}</div>
+            <div className="sm:flex sm:gap-8">
+                <div className="flex-1">
+                    <TeamList onVote={setSelected} />
+                </div>
+                <div className="flex-1 mt-4 sm:mt-0">
+                    <div className="mb-4 mt-4">
+                        내 투표: <span className="font-semibold">{selected ? selected : '아직 없음'}</span>
+                    </div>
+                    <button
+                        aria-label="투표하기"
+                        className="w-full px-4 py-2 bg-green-600 text-white rounded mb-2"
+                        disabled={!selected || loading || isClosed}
+                        onClick={handleVote}
+                    >
+                        투표하기
+                    </button>
+                    {message && <div className="mt-2 text-green-600">{message}</div>}
+                </div>
             </div>
-            <button
-                className="px-4 py-2 bg-green-600 text-white rounded"
-                disabled={!selected || loading || isClosed}
-                onClick={handleVote}
-            >
-                투표하기
-            </button>
-            {message && <div className="mt-2 text-green-600">{message}</div>}
         </div>
     );
 }

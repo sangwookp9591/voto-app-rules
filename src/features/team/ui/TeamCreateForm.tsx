@@ -49,11 +49,12 @@ export default function TeamCreateForm() {
     const limit = GAMES.find((g) => g.value === category)?.limit || 0;
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border rounded">
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border rounded bg-white shadow-md">
             <h2 className="text-xl font-bold mb-4">팀 생성</h2>
             <label className="block mb-2">
                 카테고리(게임)
                 <select
+                    aria-label="카테고리 선택"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full border rounded p-2"
@@ -68,7 +69,13 @@ export default function TeamCreateForm() {
             </label>
             <label className="block mb-2">
                 팀 이름
-                <input value={name} onChange={(e) => setName(e.target.value)} className="w-full border rounded p-2" />
+                <input
+                    aria-label="팀 이름"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full border rounded p-2"
+                    placeholder="팀 이름을 입력하세요"
+                />
             </label>
             <div className="mb-2">
                 팀원({memberIds.length}/{limit})
@@ -77,7 +84,12 @@ export default function TeamCreateForm() {
                 {memberIds.map((id) => (
                     <li key={id} className="flex items-center gap-2">
                         <span>{id}</span>
-                        <button type="button" onClick={() => handleRemoveMember(id)} className="text-red-500">
+                        <button
+                            type="button"
+                            aria-label="팀원 제거"
+                            onClick={() => handleRemoveMember(id)}
+                            className="text-red-500"
+                        >
                             제거
                         </button>
                     </li>
@@ -85,12 +97,18 @@ export default function TeamCreateForm() {
             </ul>
             <div className="flex gap-2 mb-2">
                 <input
+                    aria-label="유저 검색"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="border rounded p-2 flex-1"
                     placeholder="유저 검색(닉네임, 아이디 등)"
                 />
-                <button type="button" onClick={handleSearch} className="px-2 py-1 bg-gray-200 rounded">
+                <button
+                    type="button"
+                    aria-label="검색"
+                    onClick={handleSearch}
+                    className="px-2 py-1 bg-gray-200 rounded"
+                >
                     검색
                 </button>
             </div>
@@ -98,7 +116,12 @@ export default function TeamCreateForm() {
                 {searchResult.map((u) => (
                     <li key={u.id} className="flex items-center gap-2">
                         <span>{u.nickname || u.name || u.email}</span>
-                        <button type="button" onClick={() => handleAddMember(u.id)} className="text-blue-500">
+                        <button
+                            type="button"
+                            aria-label="팀원 추가"
+                            onClick={() => handleAddMember(u.id)}
+                            className="text-blue-500"
+                        >
                             추가
                         </button>
                     </li>
@@ -106,7 +129,8 @@ export default function TeamCreateForm() {
             </ul>
             <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded"
+                aria-label="팀 생성"
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded"
                 disabled={loading || !category || !name || memberIds.length === 0 || memberIds.length > limit}
             >
                 생성
