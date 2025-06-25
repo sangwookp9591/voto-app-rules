@@ -21,6 +21,7 @@ model User {
   teamMembers   TeamMember[]
   teamInvites   TeamInvite[]
   leaderTeams   Team[] @relation("Team_leaderId")
+  logs          Log[]
   createdAt     DateTime @default(now())
 }
 
@@ -89,4 +90,14 @@ model TeamInvite {
   status    String   // pending, accepted, rejected
   createdAt DateTime @default(now())
   respondedAt DateTime?
+}
+
+model Log {
+  id        String   @id @default(uuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  action    String
+  ip        String?
+  detail    String?
+  createdAt DateTime @default(now())
 } 
