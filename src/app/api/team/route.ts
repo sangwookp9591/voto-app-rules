@@ -11,7 +11,16 @@ const CATEGORY_LIMIT: Record<string, number> = {
     VALORANT: 5,
 };
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url!);
+    const id = searchParams.get('id');
+    if (id) {
+        const team = await prisma.team.findUnique({
+            where: { id },
+            include: { members: { include: { user: true } }, invites: true },
+        });
+        return NextResponse.json(team);
+    }
     const teams = await prisma.team.findMany({
         include: {
             members: { include: { user: true } },
