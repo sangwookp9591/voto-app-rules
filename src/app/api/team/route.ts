@@ -86,3 +86,21 @@ export async function PUT(req: NextRequest) {
     }
     return NextResponse.json({ ok: true });
 }
+
+export async function DELETE(req: NextRequest) {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.email) {
+        return NextResponse.json({ error: '로그인 필요' }, { status: 401 });
+    }
+    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    if (!user) return NextResponse.json({ error: '유저 없음' }, { status: 404 });
+    const { searchParams } = new URL(req.url!);
+    const teamId = searchParams.get('teamId');
+    if (!teamId) return NextResponse.json({ error: 'teamId 필요' }, { status: 400 });
+    const team = await prisma.team.findUnique({ where: { id: teamId } });
+    if (!team || team.leaderId !== user.id) {
+        return NextResponse.json({ error: '팀장만 삭제 가능' }, { status: 403 });
+    }
+    await prisma.team.delete({ where: { id: teamId } });
+    return NextResponse.json({ ok: true });
+}

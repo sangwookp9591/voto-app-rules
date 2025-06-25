@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface UserProfile {
     game: string;
@@ -31,6 +32,7 @@ export default function TeamDetail({ teamId }: { teamId: string }) {
     const [editCategory, setEditCategory] = useState('');
     const [addMemberId, setAddMemberId] = useState('');
     const [message, setMessage] = useState('');
+    const router = useRouter();
 
     useEffect(() => {
         fetch(`/api/team?id=${teamId}`)
@@ -77,6 +79,18 @@ export default function TeamDetail({ teamId }: { teamId: string }) {
         else setMessage('팀원 삭제 실패');
     };
 
+    const handleDelete = async () => {
+        if (!team) return;
+        if (!confirm('정말 팀을 삭제하시겠습니까?')) return;
+        const res = await fetch(`/api/team?teamId=${team.id}`, { method: 'DELETE' });
+        if (res.ok) {
+            alert('삭제 완료');
+            router.push('/vote');
+        } else {
+            alert('삭제 실패');
+        }
+    };
+
     if (!team) return <div>팀 정보를 불러오는 중...</div>;
 
     return (
@@ -113,6 +127,9 @@ export default function TeamDetail({ teamId }: { teamId: string }) {
                             팀원 추가
                         </button>
                     </div>
+                    <button onClick={handleDelete} className="mt-2 px-2 py-1 bg-red-500 text-white rounded">
+                        팀 삭제
+                    </button>
                 </div>
             )}
             <h3 className="font-semibold mb-2">멤버 목록</h3>
