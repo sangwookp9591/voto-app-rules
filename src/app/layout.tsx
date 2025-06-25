@@ -4,7 +4,7 @@ import './globals.css';
 import { ReactNode } from 'react';
 import { getServerSession } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
-import Navbar from '../components/Navbar';
+import Navbar from '../shared/components/Navbar';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
