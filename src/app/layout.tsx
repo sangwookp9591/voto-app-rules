@@ -7,6 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import Navbar from '../shared/components/Navbar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Sidebar from '../shared/components/Sidebar';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -27,12 +28,15 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     const session = await getServerSession();
     return (
         <html lang="ko">
-            <body className={`${geistSans.variable} ${geistMono.variable}`}>
-                <SessionProvider session={session}>
-                    <Navbar />
-                    <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
-                    {children}
-                </SessionProvider>
+            <body className={`bg-soopgray text-sooptext min-h-screen flex font-sans`}>
+                <Sidebar />
+                <div className="flex-1 md:ml-56 min-h-screen flex flex-col">
+                    <SessionProvider session={session}>
+                        <Navbar />
+                        <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
+                        <main className="flex-1 px-4 py-6 md:px-8 md:py-10 max-w-5xl w-full mx-auto">{children}</main>
+                    </SessionProvider>
+                </div>
             </body>
         </html>
     );
