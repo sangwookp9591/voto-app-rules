@@ -1,12 +1,28 @@
+'use client';
+import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-const data = [
-    { name: '팀A', value: 60 },
-    { name: '팀B', value: 40 },
-];
-const COLORS = ['#0088FE', '#00C49F'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#36A2EB', '#FFCE56'];
 
 export default function ResultChart() {
+    const [data, setData] = useState<any[]>([]);
+
+    useEffect(() => {
+        fetch('/api/vote')
+            .then((res) => res.json())
+            .then((results) => {
+                // API 결과를 그래프용 데이터로 변환
+                const chartData = results.map((team: any) => ({
+                    name: team.name,
+                    value: team._count?.votes || 0,
+                }));
+                setData(chartData);
+            });
+    }, []);
+
+    // 순위 계산
+    const sorted = [...data].sort((a, b) => b.value - a.value);
+
     return (
         <div className="flex flex-col md:flex-row gap-8">
             <div className="w-full md:w-1/2 h-64">
@@ -33,8 +49,11 @@ export default function ResultChart() {
             </div>
             <div className="w-full mt-4">
                 <ol className="list-decimal pl-5">
-                    <li>1위: 팀A (60표)</li>
-                    <li>2위: 팀B (40표)</li>
+                    {sorted.map((team, idx) => (
+                        <li key={team.name}>
+                            {idx + 1}위: {team.name} ({team.value}표)
+                        </li>
+                    ))}
                 </ol>
             </div>
         </div>
