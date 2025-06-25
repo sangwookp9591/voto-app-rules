@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function AdminPage() {
     const [logs, setLogs] = useState<any[]>([]);
@@ -9,6 +10,7 @@ export default function AdminPage() {
     const [teams, setTeams] = useState<any[]>([]);
     const [users, setUsers] = useState<any[]>([]);
     const [search, setSearch] = useState('');
+    const [logStats, setLogStats] = useState<any[]>([]);
 
     useEffect(() => {
         fetch(`/api/log${filter ? `?action=${filter}` : ''}`)
@@ -36,6 +38,19 @@ export default function AdminPage() {
                 .then((res) => res.json())
                 .then(setUsers);
     }, [tab]);
+
+    useEffect(() => {
+        fetch('/api/admin-log-stats')
+            .then((res) => res.json())
+            .then(setLogStats);
+    }, []);
+
+    const handleAdminDelete = async (type: string, id: string) => {
+        if (!confirm('정말 삭제하시겠습니까?')) return;
+        const res = await fetch(`/api/admin-delete?type=${type}&id=${id}`, { method: 'DELETE' });
+        if (res.ok) window.location.reload();
+        else alert('삭제 실패');
+    };
 
     return (
         <main className="max-w-2xl mx-auto py-8 px-4">
@@ -181,6 +196,14 @@ export default function AdminPage() {
                                                 {v.user?.nickname || v.user?.name || v.user?.email}
                                             </td>
                                             <td className="border px-2 py-1">{v.candidate?.name}</td>
+                                            <td className="border px-2 py-1">
+                                                <button
+                                                    onClick={() => handleAdminDelete('vote', v.id)}
+                                                    className="text-red-500 text-xs"
+                                                >
+                                                    삭제
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                             </tbody>
@@ -211,6 +234,14 @@ export default function AdminPage() {
                                                 {t.leader?.nickname || t.leader?.name || t.leader?.email}
                                             </td>
                                             <td className="border px-2 py-1">{t.members.length}</td>
+                                            <td className="border px-2 py-1">
+                                                <button
+                                                    onClick={() => handleAdminDelete('team', t.id)}
+                                                    className="text-red-500 text-xs"
+                                                >
+                                                    삭제
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                             </tbody>
@@ -243,12 +274,33 @@ export default function AdminPage() {
                                             <td className="border px-2 py-1">
                                                 {new Date(u.createdAt).toLocaleDateString()}
                                             </td>
+                                            <td className="border px-2 py-1">
+                                                <button
+                                                    onClick={() => handleAdminDelete('user', u.id)}
+                                                    className="text-red-500 text-xs"
+                                                >
+                                                    삭제
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                             </tbody>
                         </table>
                     </div>
                 )}
+            </section>
+            <section className="mb-6">
+                <h2 className="text-lg font-semibold mb-2">부정투표 시도 일별 통계</h2>
+                <div className="w-full h-48 bg-white p-2 rounded shadow">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={logStats}>
+                            <XAxis dataKey="date" />
+                            <YAxis allowDecimals={false} />
+                            <Tooltip />
+                            <Bar dataKey="count" fill="#f87171" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
             </section>
         </main>
     );
