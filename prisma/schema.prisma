@@ -20,6 +20,7 @@ model User {
   userProfiles  UserProfile[]
   teamMembers   TeamMember[]
   teamInvites   TeamInvite[]
+  leaderTeams   Team[] @relation("Team_leaderId")
   createdAt     DateTime @default(now())
 }
 
@@ -63,6 +64,8 @@ model Team {
   id        String   @id @default(uuid())
   name      String
   category  String   // 게임종목
+  leader    User     @relation("Team_leaderId", fields: [leaderId], references: [id])
+  leaderId  String
   members   TeamMember[]
   invites   TeamInvite[]
   createdAt DateTime @default(now())
