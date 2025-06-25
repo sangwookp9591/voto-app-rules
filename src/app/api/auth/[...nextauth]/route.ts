@@ -4,10 +4,11 @@ import KakaoProvider from 'next-auth/providers/kakao';
 import EmailProvider from 'next-auth/providers/email';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
+import type { NextAuthOptions } from 'next-auth';
 
 const prisma = new PrismaClient();
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         GoogleProvider({
@@ -24,10 +25,10 @@ const handler = NextAuth({
         }),
     ],
     session: {
-        strategy: 'jwt',
+        strategy: 'jwt' as const,
     },
     callbacks: {
-        async session({ session, token, user }) {
+        async session({ session, token, user }: any) {
             // 사용자 정보 세션에 추가
             if (session.user) {
                 session.user.id = token.sub;
@@ -35,6 +36,8 @@ const handler = NextAuth({
             return session;
         },
     },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
