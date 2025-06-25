@@ -1,0 +1,46 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String?
+  email         String? @unique
+  emailVerified DateTime?
+  image         String?
+  nickname      String?
+  provider      String?
+  password      String? // 일반 회원가입용
+  votes         Vote[]
+  createdAt     DateTime @default(now())
+}
+
+model Vote {
+  id          String     @id @default(uuid())
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String
+  candidate   Candidate  @relation(fields: [candidateId], references: [id])
+  candidateId String
+  createdAt   DateTime   @default(now())
+}
+
+model Candidate {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  image       String?
+  votes       Vote[]
+  voteResults VoteResult[]
+}
+
+model VoteResult {
+  id          String     @id @default(uuid())
+  candidate   Candidate  @relation(fields: [candidateId], references: [id])
+  candidateId String
+  count       Int        @default(0)
+} 
