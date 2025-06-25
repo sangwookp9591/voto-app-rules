@@ -5,6 +5,8 @@ import { ReactNode } from 'react';
 import { getServerSession } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import Navbar from '../shared/components/Navbar';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -28,6 +30,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
                 <SessionProvider session={session}>
                     <Navbar />
+                    <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
                     {children}
                 </SessionProvider>
             </body>

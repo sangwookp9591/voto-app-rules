@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface Invite {
     id: string;
@@ -31,10 +32,10 @@ export default function TeamInviteList() {
             body: JSON.stringify({ inviteId, status }),
         });
         if (res.ok) {
-            setMessage('처리 완료!');
+            toast.success('처리 완료!');
             fetchInvites();
         } else {
-            setMessage('처리 실패');
+            toast.error('처리 실패');
         }
         setLoading(false);
     };

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const GAMES = [
     { value: 'LOL', label: '리그오브레전드', limit: 5 },
@@ -40,8 +41,8 @@ export default function TeamCreateForm() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, category, memberIds }),
         });
-        if (res.ok) setMessage('팀 생성 완료!');
-        else setMessage('팀 생성 실패');
+        if (res.ok) toast.success('팀 생성 완료!');
+        else toast.error('팀 생성 실패');
         setLoading(false);
     };
 

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import TeamList from '@/features/team/ui/TeamList';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import { toast } from 'react-toastify';
 dayjs.extend(duration);
 
 const DEADLINE = dayjs('2024-07-07T23:59:00+09:00');
@@ -31,10 +32,10 @@ export default function VoteForm() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ candidateId: selected }),
         });
-        if (res.ok) setMessage('투표 완료!');
+        if (res.ok) toast.success('투표 완료!');
         else {
             const err = await res.json();
-            setMessage(err.error || '투표 실패');
+            toast.error(err.error || '투표 실패');
         }
         setLoading(false);
     };
