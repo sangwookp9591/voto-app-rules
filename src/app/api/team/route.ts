@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
         data: {
             name,
             category,
+            leaderId: user.id,
             members: {
                 create: [
                     { userId: user.id },
@@ -56,4 +57,32 @@ export async function POST(req: NextRequest) {
         include: { members: true },
     });
     return NextResponse.json(team);
+}
+
+// 팀 정보 수정, 팀원 추가/삭제 (PUT)
+export async function PUT(req: NextRequest) {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.email) {
+        return NextResponse.json({ error: '로그인 필요' }, { status: 401 });
+    }
+    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    if (!user) return NextResponse.json({ error: '유저 없음' }, { status: 404 });
+    const { teamId, name, category, addMemberId, removeMemberId } = await req.json();
+    const team = await prisma.team.findUnique({ where: { id: teamId } });
+    if (!team || team.leaderId !== user.id) {
+        return NextResponse.json({ error: '팀장만 수정 가능' }, { status: 403 });
+    }
+    // 팀 정보 수정
+    if (name || category) {
+        await prisma.team.update({ where: { id: teamId }, data: { name, category } });
+    }
+    // 팀원 추가
+    if (addMemberId) {
+        await prisma.teamMember.create({ data: { teamId, userId: addMemberId } });
+    }
+    // 팀원 삭제
+    if (removeMemberId) {
+        await prisma.teamMember.deleteMany({ where: { teamId, userId: removeMemberId } });
+    }
+    return NextResponse.json({ ok: true });
 }
